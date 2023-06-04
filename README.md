@@ -1,2 +1,2 @@
 # du-an-dat-ve-xem-phim
-NghiaNV
+NghiaNV - Dự án đặt vé xem phim
