@@ -1,0 +1,79 @@
+.ant-modal-header{
+  background: var(--white1) !important;
+}
+.ant-modal-content{
+  background: var(--black4) !important;
+
+  .fromWrapper {
+  input[type="text"] {
+    background: url("image/m.png") no-repeat 0 5px;
+    outline: none;
+    font-size: 15px;
+    font-weight: 400;
+    color: #fff;
+    padding: 12px 13px 20px 44px;
+    border: none;
+    border-bottom: 1px solid #fff;
+    width: 100%;
+    margin: 0 0 20px;
+    display: inline-block;
+  }
+
+    input[type="password"] {
+      background: url(image/l.png) no-repeat 0px 5px;
+      outline: none;
+      font-size: 15px;
+      font-weight: 400;
+      color: #fff;
+      border: none;
+      border-bottom: 1px solid #fff;
+      padding: 12px 13px 20px 44px;
+      width: 100%;
+      margin: 0 0 20px;
+      display: inline-block;
+    }
+
+    input[type="submit"] {
+      background: #ff3366;
+      color: #FFF;
+      font-size: 15px;
+      padding: 0.3em 1.2em;
+      width: 35%;
+      font-weight: 500;
+      transition: 0.5s all;
+      -webkit-transition: 0.5s all;
+      -moz-transition: 0.5s all;
+      -o-transition: 0.5s all;
+      display: inline-block;
+      cursor: pointer;
+      outline: none;
+      border: none;
+      border-radius: 3px;
+      font-family: 'Roboto Condensed', sans-serif;
+    }
+
+    input[type="button"]:hover {
+      background: #b5183f;
+      transition: 0.5s all;
+      -webkit-transition: 0.5s all;
+      -moz-transition: 0.5s all;
+      -o-transition: 0.5s all;
+    }
+
+    .submitBtn{
+      display: flex;
+      justify-content: center;
+    }
+
+    .registerRedirect{
+      color: #ffffff;
+      padding: 15px 0;
+      span{
+        font-weight: bold;
+        margin-left: 5px;
+        color: #da2f68;
+        cursor: pointer;
+      }
+    }
+  }
+}

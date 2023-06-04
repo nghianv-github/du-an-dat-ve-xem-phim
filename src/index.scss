@@ -1,0 +1,99 @@
+:root {
+  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1;
+  font-weight: 500;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+
+  --black: #04152d;
+  --black2: #041226;
+  --black3: #020c1b;
+  --black4: #04152d;
+  --black-lighter: #1c4b91;
+  --black-light: #173d77;
+  --pink: #da2f68;
+  --orange: #f89e00;
+  --gradient: linear-gradient(98.37deg, #f89e00 0.99%, #da2f68 100%);
+  --white1: #ffffffb5;
+
+  --tw-shadow: 0px 0.8px 2px rgba(0,0,0,.032),
+  0px 2.7px 6.7px rgba(0,0,0,.048),
+  0px 12px 30px rgba(0,0,0,.08);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  height: auto !important;
+  background-color: var(--black);
+}
+
+#root{
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+}
+
+#root header {
+  flex: 0 1 auto;
+}
+
+#root .main-content {
+  flex: 1 1 auto;
+}
+
+#root footer {
+  flex: 0 1 40px;
+  margin-top: 2rem;
+}
+
+/*--- Style scrollbar ---*/
+::-webkit-scrollbar {
+  width: 6px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: #bebebe;
+}
+
+/*--- Style end scrollbar ---*/
+
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background-color: #0a2955;
+  &::after {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    transform: translateX(-100%);
+    background-image: linear-gradient(
+                    90deg,
+                    rgba(#193763, 0) 0,
+                    rgba(#193763, 0.2) 20%,
+                    rgba(#193763, 0.5) 60%,
+                    rgba(#193763, 0)
+    );
+    animation: shimmer 2s infinite;
+    content: "";
+  }
+
+  @keyframes shimmer {
+    100% {
+      transform: translateX(100%);
+    }
+  }
+}

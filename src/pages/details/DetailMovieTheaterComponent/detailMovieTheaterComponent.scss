@@ -1,0 +1,137 @@
+.cinemaWrapperDetail{
+  border: 1px solid #ffffff70;
+  padding: 5px;
+  position: relative;
+  border-radius: 1rem;
+  box-shadow: var(--tw-ring-offset-shadow),
+  var(--tw-ring-shadow),
+  var(--tw-shadow);
+
+  .branchWrapper{
+    display: flex;
+    .branchInfo{
+      display: flex;
+      margin-left: 15px;
+      color: white;
+      flex-direction: column;
+      align-items: flex-start;
+      span:first-child{
+
+      };
+      span:last-child{
+        font-size: 14px;
+        opacity: 0.5;
+      };
+    }
+  }
+
+  #cinemaTab {
+    margin: 20px 0;
+    .ant-tabs-nav,
+    .ant-tabs-content-holder:last-child {
+      max-height: 550px !important;
+      border: none;
+    }
+
+    .ant-tabs-nav::-webkit-scrollbar,
+    .ant-tabs-content-holder::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+      border-radius: 5px;
+      background-color: rgb(232, 227, 227);
+    }
+
+    .ant-tabs-nav::-webkit-scrollbar-thumb,
+    .ant-tabs-content-holder::-webkit-scrollbar-thumb {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 5px;
+    }
+
+    .ant-tabs-nav::-webkit-scrollbar-track,
+    .ant-tabs-content-holder::-webkit-scrollbar-track {
+      border-radius: 5px;
+    }
+
+    .ant-tabs-tab {
+      padding: 10px;
+      position: relative;
+      min-width: 92px;
+      opacity: .5;
+      &:hover{
+        opacity: 1;
+      }
+      &:focus{
+        opacity: 1;
+      }
+      &.ant-tabs-tab-active{
+        opacity: 1;
+      }
+    }
+
+    .ant-tabs-tab::after {
+      left: 50%;
+      width: calc(100% - 40px);
+      bottom: 0;
+      content: "";
+      position: absolute;
+      transform: translateX(-50%);
+    }
+
+    .ant-tabs-ink-bar{
+      background: transparent;
+    }
+
+    .ant-tabs-nav,
+    .ant-tabs-content-holder:last-child {
+      max-height: 550px !important;
+      overflow: auto;
+    }
+  }
+
+  #tab-cinema-panel-1 {
+    margin-left: 0;
+  }
+
+  .movieItemDetail{
+    display: flex;
+    padding: 20px;
+    align-items: center;
+
+    .movieItem__img{
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      object-position: center;
+    }
+    .movieItem__info{
+      margin-left: 15px;
+      color: white ;
+
+      .movieItem__info--name{
+        margin-bottom: 3px;
+        display: block;
+        font-size: 17px;
+        font-weight: bold;
+      }
+
+      .movieItem__info--address{
+        margin-bottom: 10px;
+        font-size: 14px;
+        opacity: .6;
+        display: block;
+      }
+
+      .movieItem__info--times{
+        display: grid;
+        gap: .5rem;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
+      .time__item{
+        border: 1px solid #ffffff70;
+        color: white;
+        padding: 5px
+      }
+    }
+
+  }
+}

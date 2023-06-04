@@ -1,0 +1,24 @@
+.ghe {
+    background: url('/src/assets/checkout/seat-unselect-normal.png');
+}
+
+.gheDaDat {
+    background: url('/src/assets/checkout/seat-set-normal.png');
+}
+
+.gheDangDat {
+    background: url('/src/assets/checkout/seat-select-normal.png');
+}
+
+.gheVip {
+    background: url('/src/assets/checkout/seat-unselect-vip.png');
+}
+
+.gheDaDuocDat {
+    background: url('/src/assets/checkout/seat-buy-normal.png');
+}
+
+.gheKhachDat {
+    background: url('/src/assets/checkout/seat-process-normal.png');
+    cursor: no-drop;
+}
