@@ -6,10 +6,6 @@
     background: url('/src/assets/checkout/seat-set-normal.png');
 }
 
-.gheDangDat {
-    background: url('/src/assets/checkout/seat-select-normal.png');
-}
-
 .gheVip {
     background: url('/src/assets/checkout/seat-unselect-vip.png');
 }
@@ -21,4 +17,8 @@
 .gheKhachDat {
     background: url('/src/assets/checkout/seat-process-normal.png');
     cursor: no-drop;
+}
+
+.gheDangDat {
+    background: url('/src/assets/checkout/seat-select-normal.png');
 }

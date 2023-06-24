@@ -9,9 +9,14 @@ import chair4 from '../../assets/checkout/seat-set-normal.png';
 import chair5 from '../../assets/checkout/seat-unselect-vip.png';
 import chair6 from '../../assets/checkout/seat-unselect-normal.png';
 import ImgScreen from '../../assets/checkout/ic-screen.png';
-import {datGheAction, quanLyDatVeAction} from "../../redux/actions/BookingChairAction";
+import {datGheAction, datVeAction, quanLyDatVeAction} from "../../redux/actions/BookingChairAction";
 import {useDispatch, useSelector} from "react-redux";
 import {history} from "../../App";
+import {bookChairService} from "../../services/BookChairService";
+import {connection} from "../../index";
+import _ from "lodash";
+import {datGhe} from "../../redux/stores/BookChairSlide";
+
 
 function Checkout(props) {
     const dispatch = useDispatch();
@@ -113,6 +118,49 @@ function Checkout(props) {
 
 
     useEffect(() => {
+        dispatch(quanLyDatVeAction(movieId));
+
+        //đặt vé thành công socket bắn về client
+        connection.on('datVeThanhCong', () => {
+            dispatch(quanLyDatVeAction(movieId))
+        })
+
+        //Vừa vào trang load tất cả ghế ng khác đang đặt
+        connection.invoke('loadDanhSachGhe', movieId);
+
+        // load sanh sach ghe khach dat
+        connection.on("loadDanhSachGheDaDat", (dsGheKhachDat) => {
+            // loại mình ra khỏi danh sách
+            dsGheKhachDat = dsGheKhachDat.filter(item => item.taiKhoan !== userLogin.taiKhoan);
+
+            //Gộp danh sách ghế khách đặt ở tất cả user thành 1 mảng chung
+            let arrGheKhachDat = dsGheKhachDat.reduce((result, item, index) => {
+                let arrGhe = JSON.parse(item.danhSachGhe);
+                return [...result,...arrGhe];
+            }, [])
+
+            //Đưa lên redux
+            arrGheKhachDat = _.uniqBy(arrGheKhachDat, 'maGhe');
+            dispatch(datGhe(arrGheKhachDat))
+        });
+
+        // Cài đặt sử kiện khi reload trang
+        window.addEventListener("beforeunload", clearGhe);
+
+        return () => {
+            clearGhe()
+            window.removeEventListener("beforeunload", clearGhe);
+        }
+
+    }, []);
+
+
+    const clearGhe = function(event){
+        connection.invoke('huyDat', userLogin.taiKhoan, movieId);
+    }
+
+
+    useEffect(() => {
         window.addEventListener('resize', () => {
             setScreenWidth(document.documentElement.clientWidth);
         });
@@ -138,170 +186,180 @@ function Checkout(props) {
     }, [seconds]);
 
     return (
-      <div className="wrapper-book">
-          <div className="contentWrapper">
-              <div className="row">
-                  <div className="col-12 col-lg-9">
-                      <nav aria-label="breadcrumb">
-                          <ol className="breadcrumb">
-                              <li className="breadcrumb-item"><NavLink to={'/'}>Trang chủ</NavLink></li>
-                              <li className="breadcrumb-item"><NavLink to={'#'}>Đặt vé</NavLink></li>
-                              <li className="breadcrumb-item active" aria-current="page">{thongTinPhim.tenPhim}</li>
-                          </ol>
-                      </nav>
-                      <div className="box-overflow">
-                          <div className="chair-status">
-                              <div className="chair-status-item">
-                                  <img src={chair6} alt="/" />
-                                  <span className="chair-name">Ghế chưa đặt</span>
+        <div className="wrapper-book">
+            <div className="contentWrapper">
+                  <div className="row">
+                      <div className="col-12 col-lg-9">
+                          <nav aria-label="breadcrumb">
+                              <ol className="breadcrumb">
+                                  <li className="breadcrumb-item"><NavLink to={'/'}>Trang chủ</NavLink></li>
+                                  <li className="breadcrumb-item"><NavLink to={'#'}>Đặt vé</NavLink></li>
+                                  <li className="breadcrumb-item active" aria-current="page">{thongTinPhim.tenPhim}</li>
+                              </ol>
+                          </nav>
+                          <div className="box-overflow">
+                              <div className="chair-status">
+                                  <div className="chair-status-item">
+                                      <img src={chair6} alt="/" />
+                                      <span className="chair-name">Ghế chưa đặt</span>
+                                  </div>
+                                  <div className="chair-status-item">
+                                      <img src={chair3} alt="/" />
+                                      <span className="chair-name">Ghế đang đặt</span>
+                                  </div>
+                                  <div className="chair-status-item">
+                                      <img src={chair2} alt="/" />
+                                      <span className="chair-name">Ghế đã đặt</span>
+                                  </div>
+                                  <div className="chair-status-item">
+                                      <img src={chair1} alt="/" />
+                                      <span className="chair-name">Ghế mình đặt</span>
+                                  </div>
+                                  <div className="chair-status-item">
+                                      <img src={chair4} alt="/" />
+                                      <span className="chair-name">Ghế khách đang đặt</span>
+                                  </div>
                               </div>
-                              <div className="chair-status-item">
-                                  <img src={chair3} alt="/" />
-                                  <span className="chair-name">Ghế đang đặt</span>
-                              </div>
-                              <div className="chair-status-item">
-                                  <img src={chair2} alt="/" />
-                                  <span className="chair-name">Ghế đã đặt</span>
-                              </div>
-                              <div className="chair-status-item">
-                                  <img src={chair1} alt="/" />
-                                  <span className="chair-name">Ghế mình đặt</span>
-                              </div>
-                              <div className="chair-status-item">
-                                  <img src={chair4} alt="/" />
-                                  <span className="chair-name">Ghế khách đang đặt</span>
+                              <div className="chair-select">
+                                  <div className="screen-img">
+                                      <img src={ImgScreen} alt="/" />
+                                  </div>
+                                  <div className="chair-show">
+                                      {renderSeats()}
+                                  </div>
                               </div>
                           </div>
-                          <div className="chair-select">
-                              <div className="screen-img">
-                                  <img src={ImgScreen} alt="/" />
-                              </div>
-                              <div className="chair-show">
-                                  {renderSeats()}
+                          <div className="total-money">
+                              <div className="row">
+                                  <div className="col-12 col-lg-3 box-chair d-justify-align">
+                                      <img src={chair6} alt="/" />
+                                      <span className="chair-name">Ghế thường</span>
+                                  </div>
+                                  <div className="col-12 col-lg-3 box-chair d-justify-align mt-2 mt-lg-0">
+                                      <img src={chair5} alt="/" />
+                                      <span className="chair-name">Ghế Vip</span>
+                                  </div>
+                                  <div className="col-12 col-lg-3 box-total d-justify-align mt-2 mt-lg-0">
+                                      <p>Tổng tiền</p>
+                                      <span className="total"> {
+                                          danhSachGheDangDat.reduce((tongTien, ghe, index) => {
+                                              return tongTien += ghe.giaVe
+                                          }, 0).toLocaleString()
+                                      } ₫</span>
+                                  </div>
+                                  <div className="col-12 col-lg-3 box-time d-justify-align mt-2 mt-lg-0">
+                                      <p> Thời gian còn lại</p>
+                                      <span className="time-select">{minutes}:{seconds}</span>
+                                  </div>
                               </div>
                           </div>
                       </div>
-                      <div className="total-money">
-                          <div className="row">
-                              <div className="col-12 col-lg-3 box-chair d-justify-align">
-                                  <img src={chair6} alt="/" />
-                                  <span className="chair-name">Ghế thường</span>
+                      <div className="col-12 col-lg-3 book-right">
+                          <div id="js-book-right">
+                              <div className="film-info row">
+                                  <div className="col-5">
+                                      <div className="info-img">
+                                          <img src={thongTinPhim.hinhAnh} alt={thongTinPhim.hinhAnh}/>
+                                      </div>
+                                  </div>
+                                  <div className="col-7">
+                                      <div className="film-name">
+                                          <h5>{thongTinPhim.tenPhim}</h5>
+                                          <span>2D phụ đề</span>
+                                      </div>
+                                  </div>
                               </div>
-                              <div className="col-12 col-lg-3 box-chair d-justify-align mt-2 mt-lg-0">
-                                  <img src={chair5} alt="/" />
-                                  <span className="chair-name">Ghế Vip</span>
+
+                              <span className="book-border"></span>
+
+                              <div className="show-time mt-2">
+                                  <div className="row">
+                                      <div className="col-5 show-time-title">
+                                          Thể loại
+                                      </div>
+                                      <div className="col-7 show-time-content">
+                                          Hành động, phiêu lưu
+                                      </div>
+                                  </div>
+                                  <div className="row mt-2">
+                                      <div className="col-5 show-time-title">
+                                          Thời lượng
+                                      </div>
+                                      <div className="col-7 show-time-content">
+                                          150 phút
+                                      </div>
+                                  </div>
                               </div>
-                              <div className="col-12 col-lg-3 box-total d-justify-align mt-2 mt-lg-0">
-                                  <p>Tổng tiền</p>
-                                  <span className="total">12020 ₫</span>
-                              </div>
-                              <div className="col-12 col-lg-3 box-time d-justify-align mt-2 mt-lg-0">
-                                  <p> Thời gian còn lại</p>
-                                  <span className="time-select">{minutes}:{seconds}</span>
+
+                              <span className="book-border"></span>
+
+                              <div className="detail-info">
+                                  <div className="row">
+                                      <div className="col-5 show-time-title">
+                                          Địa chỉ
+                                      </div>
+                                      <div className="col-7 show-time-content">
+                                          {thongTinPhim.diaChi}
+                                      </div>
+                                  </div>
+
+                                  <div className="row mt-2">
+                                      <div className="col-5 show-time-title">
+                                          Cụm rạp
+                                      </div>
+                                      <div className="col-7 show-time-content">
+                                          {thongTinPhim.tenCumRap}
+                                      </div>
+                                  </div>
+
+                                  <div className="row mt-2">
+                                      <div className="col-5 show-time-title">
+                                          Rạp chiếu
+                                      </div>
+                                      <div className="col-7 show-time-content">
+                                          {thongTinPhim.tenRap}
+                                      </div>
+                                  </div>
+
+                                  <div className="row mt-2">
+                                      <div className="col-5 show-time-title">
+                                          Ngày chiếu
+                                      </div>
+                                      <div className="col-7 show-time-content">
+                                          {thongTinPhim.ngayChieu}
+                                      </div>
+                                  </div>
+                                  <div className="row mt-2">
+                                      <div className="col-5 show-time-title">
+                                          Giờ chiếu
+                                      </div>
+                                      <div className="col-7 show-time-content">
+                                          {thongTinPhim.gioChieu}
+                                      </div>
+                                  </div>
+                                  <div className="row mt-2">
+                                      <div className="col-5 show-time-title">
+                                          Ghế ngồi
+                                      </div>
+                                      <div className="col-7 show-time-content">
+                                          S1
+                                      </div>
+                                  </div>
+                                  <div className="row btn-next mt-3">
+                                      <button onClick={() => {
+                                          const ttdv = bookChairService.ttdv();
+                                          ttdv.maLichChieu = movieId;
+                                          ttdv.danhSachVe = danhSachGheDangDat;
+
+                                          dispatch(datVeAction(ttdv));
+                                      }} type="button" className="btn btn-danger">Tiếp tục</button>
+                                  </div>
                               </div>
                           </div>
                       </div>
                   </div>
-                  <div className="col-12 col-lg-3 book-right">
-                      <div id="js-book-right">
-                          <div className="film-info row">
-                              <div className="col-5">
-                                  <div className="info-img">
-                                      <img src={thongTinPhim.hinhAnh} alt={thongTinPhim.hinhAnh}/>
-                                  </div>
-                              </div>
-                              <div className="col-7">
-                                  <div className="film-name">
-                                      <h5>{thongTinPhim.tenPhim}</h5>
-                                      <span>2D phụ đề</span>
-                                  </div>
-                              </div>
-                          </div>
-
-                          <span className="book-border"></span>
-
-                          <div className="show-time mt-2">
-                              <div className="row">
-                                  <div className="col-5 show-time-title">
-                                      Thể loại
-                                  </div>
-                                  <div className="col-7 show-time-content">
-                                      Hành động, phiêu lưu
-                                  </div>
-                              </div>
-                              <div className="row mt-2">
-                                  <div className="col-5 show-time-title">
-                                      Thời lượng
-                                  </div>
-                                  <div className="col-7 show-time-content">
-                                      150 phút
-                                  </div>
-                              </div>
-                          </div>
-
-                          <span className="book-border"></span>
-
-                          <div className="detail-info">
-                              <div className="row">
-                                  <div className="col-5 show-time-title">
-                                      Địa chỉ
-                                  </div>
-                                  <div className="col-7 show-time-content">
-                                      {thongTinPhim.diaChi}
-                                  </div>
-                              </div>
-
-                              <div className="row mt-2">
-                                  <div className="col-5 show-time-title">
-                                      Cụm rạp
-                                  </div>
-                                  <div className="col-7 show-time-content">
-                                      {thongTinPhim.tenCumRap}
-                                  </div>
-                              </div>
-
-                              <div className="row mt-2">
-                                  <div className="col-5 show-time-title">
-                                      Rạp chiếu
-                                  </div>
-                                  <div className="col-7 show-time-content">
-                                      {thongTinPhim.tenRap}
-                                  </div>
-                              </div>
-
-                              <div className="row mt-2">
-                                  <div className="col-5 show-time-title">
-                                      Ngày chiếu
-                                  </div>
-                                  <div className="col-7 show-time-content">
-                                      {thongTinPhim.ngayChieu}
-                                  </div>
-                              </div>
-                              <div className="row mt-2">
-                                  <div className="col-5 show-time-title">
-                                      Giờ chiếu
-                                  </div>
-                                  <div className="col-7 show-time-content">
-                                      {thongTinPhim.gioChieu}
-                                  </div>
-                              </div>
-                              <div className="row mt-2">
-                                  <div className="col-5 show-time-title">
-                                      Ghế ngồi
-                                  </div>
-                                  <div className="col-7 show-time-content">
-                                      S1
-                                  </div>
-                              </div>
-                              <div className="row btn-next mt-3">
-                                  <button type="button" className="btn btn-danger">Tiếp tục</button>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-              </div>
+            </div>
           </div>
-      </div>
     );
 }
 
