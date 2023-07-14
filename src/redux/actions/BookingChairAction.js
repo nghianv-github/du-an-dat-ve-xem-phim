@@ -1,6 +1,7 @@
 import {bookChairService} from "../../services/BookChairService";
 import {datVe, datVeHoanTat, setMaLichChieu} from "../stores/BookChairSlide";
 import {connection} from "../../index";
+import {createNotification} from "../../utils/notification";
 
 export const quanLyDatVeAction = (code) => {
     return async (dispatch) => {
@@ -32,6 +33,7 @@ export const datVeAction = (ttdv = bookChairService.ttdv()) => {
             let {taiKhoan} = getState().accountSlide.userLogin;
             connection.invoke('datGheThanhCong', taiKhoan, ttdv.maLichChieu);
 
+            createNotification('success', 'Đặt vé thành công!');
             // await dispatch(LoadingReducer.actions.setLoading(HIDE_LOADING))
 
             //chuyển sang tab kết quả

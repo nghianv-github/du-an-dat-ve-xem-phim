@@ -8,6 +8,8 @@ import 'antd/dist/antd.css';
 import './index.scss';
 import {BASE_URL} from "./utils/settings/config";
 import * as signalR from '@aspnet/signalr';
+import {NotificationContainer} from "react-notifications";
+import 'react-notifications/lib/notifications.css';
 
 // ket noi den server socket
 export  const connection = new signalR.HubConnectionBuilder().withUrl(`${BASE_URL}/DatVeHub`).configureLogging(signalR.LogLevel.Information).build();
@@ -17,6 +19,7 @@ connection.start().then(() => {
     root.render(
         <Provider store={configStore}>
             <App/>
+            <NotificationContainer/>
         </Provider>
     );
 }).catch(error => {

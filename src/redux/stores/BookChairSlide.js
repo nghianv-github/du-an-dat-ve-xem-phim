@@ -2,7 +2,7 @@ import {createSlice} from "@reduxjs/toolkit";
 import {bookChairService} from "../../services/BookChairService";
 
 const initialState = {
-    chiTietPhongVe: bookChairService.ttpv(), // Chi tiết phòng vé
+    chiTietPhongVe: '', // bookChairService.ttpv() Chi tiết phòng vé
     danhSachGheDangDat: [], // Danh sách ghế đang đặt
     danhSachGheKhachDat: [{maGhe: 123}], // Danh sách ghế khách đặt
 }
