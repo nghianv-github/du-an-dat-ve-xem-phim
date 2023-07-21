@@ -10,7 +10,8 @@ export const createNotification = (type, messages) => {
             NotificationManager.success(messages);
             break;
         case 'warning':
-            NotificationManager.warning('Warning message', messages, 3000);
+            NotificationManager.warning(messages);
+            // NotificationManager.warning('Warning message', messages, 3000);
             break;
         case 'error':
             NotificationManager.error('Error message', 'Click me!', 5000, () => {

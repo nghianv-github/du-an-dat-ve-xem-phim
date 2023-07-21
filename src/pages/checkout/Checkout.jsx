@@ -16,6 +16,8 @@ import {bookChairService} from "../../services/BookChairService";
 import {connection} from "../../index";
 import _ from "lodash";
 import {datGhe} from "../../redux/stores/BookChairSlide";
+import {openModalAccount} from "../../redux/stores/ModalAccountSlide";
+import {createNotification} from "../../utils/notification";
 
 function Checkout(props) {
     const dispatch = useDispatch();
@@ -360,11 +362,19 @@ function Checkout(props) {
                                           </div>
                                           <div className="row btn-next mt-3 AiOutlineLoading3Quarters">
                                               <button onClick={() => {
-                                                  const ttdv = bookChairService.ttdv();
-                                                  ttdv.maLichChieu = movieId;
-                                                  ttdv.danhSachVe = danhSachGheDangDat;
+                                                  if(Object.keys(userLogin).length === 0) {
+                                                      createNotification('info', 'Vui lòng đăng nhập để đặt vé');
+                                                      dispatch(openModalAccount({
+                                                          visible: true,
+                                                          isRegister: false
+                                                      }))
+                                                  }else {
+                                                      const ttdv = bookChairService.ttdv();
+                                                      ttdv.maLichChieu = movieId;
+                                                      ttdv.danhSachVe = danhSachGheDangDat;
 
-                                                  dispatch(datVeAction(ttdv));
+                                                      dispatch(datVeAction(ttdv));
+                                                  }
                                               }} type="button" className="btn btn-danger">Tiếp tục</button>
                                           </div>
                                       </div>

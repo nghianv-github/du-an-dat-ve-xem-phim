@@ -1,19 +1,19 @@
 import {accountService} from "../../services/AccountService";
 import {setInfoAccount, setInfoLogin} from "../stores/AccountSlide";
 import {openModalAccount} from "../stores/ModalAccountSlide";
+import {createNotification} from "../../utils/notification";
 
 export const loginAction = (accInfo) => {
     return async (dispatch) => {
         try {
             const result = await accountService.login(accInfo);
-            if(result.data.statusCode === 200){
-                dispatch(setInfoLogin(result.data.content))
-            }
+            dispatch(setInfoLogin(result.data.content))
             dispatch(openModalAccount({
                 visible: false
             }))
+            createNotification('success', 'Đăng nhập thành công');
         }catch (e) {
-            console.log('LoginAction', e);
+            createNotification('warning', 'Thông tin tài khoản hoặc mật khẩu không chính xác');
         }
     }
 }
